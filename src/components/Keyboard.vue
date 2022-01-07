@@ -5,6 +5,7 @@
 <script>
 import Keyboard from "simple-keyboard";
 import "simple-keyboard/build/css/index.css";
+import axios from "axios";
 
 export default {
   name: "SimpleKeyboard",
@@ -91,7 +92,6 @@ export default {
     row: 0,
   }),
   mounted() {
-    console.log(this.greenKey);
     this.keyboard = new Keyboard(this.keyboardClass, {
       onChange: this.onChange,
       onKeyPress: this.onKeyPress,
@@ -115,26 +115,9 @@ export default {
       ],
     });
   },
-  //   this.keyboard.setOptions({
-  //       buttonTheme: [
-  //         {
-  //           class: "hg-green",
-  //           buttons: this.greenKey ? this.greenKey.join(" ").toUpperCase() : "Z",
-  //         },
-  //         // {
-  //         //   class: "hg-yellow",
-  //         //   buttons: this.yellowKey.length != 0 ? this.yellowKey.join(" ").toUpperCase() : "0",
-  //         // },
-  //         // {
-  //         //   class: "hg-gray",
-  //         //   buttons: this.grayKey.length != 0 ? this.grayKey.join(" ").toUpperCase() : "0",
-  //         // },
-  //       ],
-  //     });
   methods: {
     onKeyPress(button) {
       this.$emit("onKeyPress", button);
-      console.log(this.greenKey);
 
       var letters = /^[a-zA-Z]+$/;
       if (this.word.length < 5 && button.match(letters)) {
@@ -148,9 +131,17 @@ export default {
       }
 
       if (button === "{enter}" && this.word.length === 5) {
-        this.$emit("check-word", this.word.toLowerCase(), this.row);
-        this.word = "";
-        this.row += 1;
+        axios
+          .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${this.word}`)
+          .then(() => {
+            this.$emit("check-word", this.word.toLowerCase(), this.row);
+            this.word = "";
+            this.row += 1;
+          })
+          .catch(() => {
+              console.log("faile")
+            this.$emit("invalid-word", this.word.toLowerCase());
+          });
       }
     },
     reset() {

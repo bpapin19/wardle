@@ -9,6 +9,7 @@
   </button>
   <h2 v-if="this.is_game_over">{{ this.game_over_msg }}</h2>
   <Stopwatch ref="stopwatchRef" />
+  <div class="invalid-word">{{ this.invalidMsg }}</div>
   <LetterGrid
     v-bind:letterArray="this.letterArray"
     v-bind:rightSpot="this.rightSpot"
@@ -18,6 +19,7 @@
     @fill-tile="fillTile"
     @backspace="backspace"
     @check-word="checkWord"
+    @invalid-word="invalidWord"
     v-if="showKeyboard"
     v-bind:greenKey="this.greenKey"
     v-bind:yellowKey="this.yellowKey"
@@ -60,8 +62,10 @@ export default {
       is_round_over: false,
       showKeyboard: false,
       triesCount: 0,
+      invalidMsg: "",
     };
   },
+  mounted() {},
   methods: {
     startGame() {
       this.round++;
@@ -79,6 +83,7 @@ export default {
       }
     },
     checkWord(word, row) {
+      this.invalidMsg = "";
       if (word === this.word) {
         this.is_round_over = true;
         for (let i = 0; i < this.word.length; i++) {
@@ -135,6 +140,9 @@ export default {
         this.showKeyboard = false;
       }
     },
+    invalidWord(word) {
+      this.invalidMsg = word.toUpperCase() + " is not a valid word.";
+    },
     nextRound() {
       this.is_round_over = false;
       this.round++;
@@ -179,5 +187,8 @@ button:hover {
   background-color: rgb(12, 164, 30);
   color: white;
   cursor: pointer;
+}
+.invalid-word {
+  color: red;
 }
 </style>

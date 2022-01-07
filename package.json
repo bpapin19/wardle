@@ -9,9 +9,11 @@
     "deploy": "sh deploy.sh"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "simple-keyboard": "^3.4.23",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-axios": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
