@@ -19,6 +19,9 @@
     @backspace="backspace"
     @check-word="checkWord"
     v-if="showKeyboard"
+    v-bind:greenKey="this.greenKey"
+    v-bind:yellowKey="this.yellowKey"
+    v-bind:grayKey="this.grayKey"
     ref="keyboardRef"
   />
 </template>
@@ -36,17 +39,20 @@ export default {
     Keyboard,
   },
   data() {
+    // eslint-disable-next-line prettier/prettier
+    // let word_list = ["abuse", "adult", "agent", "anger", "apple", "award", "basis", "beach", "birth", "block", "blood", "board", "brain", "bread", "break", "brown", "buyer", "cause", "chain", "chair", "chest", "chief", "child", "china", "claim", "class", "clock", "coach", "coast", "court", "cover", "cream", "crime", "cross", "crowd", "crown", "cycle", "dance", "death", "depth", "doubt", "draft", "drama", "dream", "dress", "drink", "drive", "earth", "enemy", "entry", "error", "event", "faith", "fault", "field", "fight", "final", "floor", "focus", "force", "frame", "frank", "front", "fruit", "glass", "grant", "grass", "green", "group", "guide", "heart", "henry", "horse", "hotel", "house", "image", "index", "input", "issue", "japan", "jones", "judge", "knife", "laura", "layer", "level", "lewis", "light", "limit", "lunch", "major", "march", "match", "metal", "model", "money", "month", "motor", "mouth", "music", "night", "noise", "north", "novel", "nurse", "offer", "order", "other", "owner", "panel", "paper", "party", "peace", "peter", "phase", "phone", "piece", "pilot", "pitch", "place", "plane", "plant", "plate", "point", "pound", "power", "press", "price", "pride", "prize", "proof", "queen", "radio", "range", "ratio", "reply", "right", "river", "round", "route", "rugby", "scale", "scene", "scope", "score", "sense", "shape", "share", "sheep", "sheet", "shift", "shirt", "shock", "sight", "simon", "skill", "sleep", "smile", "smith", "smoke", "sound", "south", "space", "speed", "spite", "sport", "squad", "staff", "stage", "start", "state", "steam", "steel", "stock", "stone", "store", "study", "stuff", "style", "sugar", "table", "taste", "terry", "theme", "thing", "title", "total", "touch", "tower", "track", "trade", "train", "trend", "trial", "trust", "truth", "uncle", "union", "unity", "value", "video", "visit", "voice", "waste", "watch", "water", "while", "white", "whole", "woman", "world", "youth"];
+    // let three_words = word_list.sort(() => 0.5 - Math.random()).slice(0, 3);
+    // let first_word = three_words[0];
 
-    let word_list = ["abuse", "adult", "agent", "anger", "apple", "award", "basis", "beach", "birth", "block", "blood", "board", "brain", "bread", "break", "brown", "buyer", "cause", "chain", "chair", "chest", "chief", "child", "china", "claim", "class", "clock", "coach", "coast", "court", "cover", "cream", "crime", "cross", "crowd", "crown", "cycle", "dance", "death", "depth", "doubt", "draft", "drama", "dream", "dress", "drink", "drive", "earth", "enemy", "entry", "error", "event", "faith", "fault", "field", "fight", "final", "floor", "focus", "force", "frame", "frank", "front", "fruit", "glass", "grant", "grass", "green", "group", "guide", "heart", "henry", "horse", "hotel", "house", "image", "index", "input", "issue", "japan", "jones", "judge", "knife", "laura", "layer", "level", "lewis", "light", "limit", "lunch", "major", "march", "match", "metal", "model", "money", "month", "motor", "mouth", "music", "night", "noise", "north", "novel", "nurse", "offer", "order", "other", "owner", "panel", "paper", "party", "peace", "peter", "phase", "phone", "piece", "pilot", "pitch", "place", "plane", "plant", "plate", "point", "pound", "power", "press", "price", "pride", "prize", "proof", "queen", "radio", "range", "ratio", "reply", "right", "river", "round", "route", "rugby", "scale", "scene", "scope", "score", "sense", "shape", "share", "sheep", "sheet", "shift", "shirt", "shock", "sight", "simon", "skill", "sleep", "smile", "smith", "smoke", "sound", "south", "space", "speed", "spite", "sport", "squad", "staff", "stage", "start", "state", "steam", "steel", "stock", "stone", "store", "study", "stuff", "style", "sugar", "table", "taste", "terry", "theme", "thing", "title", "total", "touch", "tower", "track", "trade", "train", "trend", "trial", "trust", "truth", "uncle", "union", "unity", "value", "video", "visit", "voice", "waste", "watch", "water", "while", "white", "whole", "woman", "world", "youth"];
-    let three_words = word_list.sort(() => 0.5 - Math.random()).slice(0, 3);
-    let first_word = three_words[0];
-    
     return {
       letterArray: [[], [], [], [], [], []],
-      words: three_words,
-      word: first_word,
+      words: ["artic", "bench", "tries"],
+      word: "artic",
       rightSpot: [],
       rightLetter: [],
+      greenKey: [],
+      yellowKey: [],
+      grayKey: [],
       game_over_msg: "",
       is_game_over: false,
       difficulty: "Easy",
@@ -96,12 +102,27 @@ export default {
           if (this.word[i] === word[i]) {
             // right spot
             this.rightSpot.push(row + "" + i);
+            this.greenKey.push(word[i].toUpperCase());
+            if (this.yellowKey.includes(word[i].toUpperCase())) {
+              this.yellowKey = this.yellowKey.filter(function (f) {
+                return f !== word[i].toUpperCase();
+              });
+            }
           } else {
             for (let j = 0; j < this.word.length; j++) {
               if (this.word[j] === word[i]) {
                 // right letter
                 this.rightLetter.push(row + "" + i);
+                if (!this.greenKey.includes(word[i].toUpperCase())) {
+                  this.yellowKey.push(word[i].toUpperCase());
+                }
               }
+            }
+            if (
+              !this.greenKey.includes(word[i].toUpperCase()) &&
+              !this.yellowKey.includes(word[i].toUpperCase())
+            ) {
+              this.grayKey.push(word[i].toUpperCase());
             }
           }
         }
@@ -111,6 +132,7 @@ export default {
           "Tough Scene. You didn't get the word: " + this.word.toUpperCase();
         this.is_game_over = true;
         this.$refs.stopwatchRef.stop();
+        this.showKeyboard = false;
       }
     },
     nextRound() {
@@ -121,6 +143,9 @@ export default {
       this.$refs.keyboardRef.reset();
       this.rightSpot = [];
       this.rightLetter = [];
+      this.greenKey = [];
+      this.yellowKey = [];
+      this.grayKey = [];
     },
   },
 };
