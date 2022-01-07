@@ -46,8 +46,8 @@ export default {
 
     return {
       letterArray: [[], [], [], [], [], []],
-      words: ["artic", "bench", "tries"],
-      word: "artic",
+      words: ["catch", "bench", "fairy"],
+      word: "catch",
       rightSpot: [],
       rightLetter: [],
       greenKey: [],
