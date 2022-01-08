@@ -142,6 +142,7 @@ export default {
     },
     invalidWord(word) {
       this.invalidMsg = word.toUpperCase() + " is not a valid word.";
+      setTimeout(() => (this.invalidMsg = ""), 2500);
     },
     nextRound() {
       this.is_round_over = false;
